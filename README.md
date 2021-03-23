@@ -1,8 +1,71 @@
+## Google Vision attacks
+This fork tries to apply RayS untargeted Linf attack to commercial Google Vision API. Bellow are the results of the experiments done so far.
+
+Google vision API doesn't classify images into a set number of categories. Therefore we need our own binary decision function which defines what is/isn't a valid adversarial example.
+
+Another problem is that one concept may be represented by multiple labels. For example labels "Cat", "Small to medium-sized cats", "Whiskers" and "felidae" are all somewhat close to the category "Cat". Idealy we would like to eliminate all those similar labels from the classification results.
+
+Because RayS is inherently binary search algorithm, the definition of advesarial example may reflect how hard it is to find one.
+
+Various boundary decision functions were experimented with:
+- **strict untargeted attack** - any mention of any label from object label-set in any label returned by the API is considered a fail
+- **top5 attack** - no labels coresponding to the original concept may appear in top5 results
+- **top1 attack** - Only the first label is taken into account.
+
+### Cat attack
+#### Original image of the cat                  
+![](test_images/cat.png)
+
+#### Hard attack
+- All labels containing "cat", "felidae" or "whiskers" were forbidden.
+- 3200 queries, L_inf = 0.196
+
+![](output/cat_attack_hard/cat_queries=3200_dist=0.19607919454574585.png)
+
+#### Bit easier attack
+- All labels containing "cat" were forbidden.
+- 3200 queries, L_inf = 0.1757
+
+![](output/cat_attack_relaxed/cat_queries=3200_dist=0.1757822334766388.png)
+
+#### Cat top5
+- word "cat" forbidden in top5 labels
+- 1600 queries, L_inf = 0.121
+
+![](output/cat_attack_top5/cat_queries=1600_dist=0.12156948447227478.png)
+
+#### Cat top1 
+- word "cat" forbidden in top1 label
+- 1600 queries, L_inf = 0.0666
+
+![](output/cat_attack_top1/cat_queries=1600_dist=0.06666761636734009.png)
+
+### Shark attack
+#### Original image of the shark 
+![](test_images/shark.png)
+
+#### Shark top5
+- no mention of "Shark", "Fin" "Water", "Fish", "Carcharhiniformes", "Lamnidae", "Lamniformes" allowed in top5 labels
+- 1600 queries, L_inf = 0.141
+
+![](output/shark_attack_top5/cat_queries=1600_dist=0.14117661118507385.png)
+
+#### Shark top1
+- no mention of "Shark", "Fin" "Water", "Fish", "Carcharhiniformes", "Lamnidae", "Lamniformes" allowed in top1 label
+- 1600 queries, L_inf = 0.0705
+
+![](output/shark_attack_top1/shark_queries=1600_dist=0.07058864831924438.png)
+
+
 # RayS: A Ray Searching Method for Hard-label Adversarial Attack (KDD2020)
 "RayS: A Ray Searching Method for Hard-label Adversarial Attack"\
 *[Jinghui Chen](https://jinghuichen.github.io)*, *[Quanquan Gu](http://web.cs.ucla.edu/~qgu/)*\
 [https://arxiv.org/abs/2006.12792](https://arxiv.org/abs/2006.12792)
 
+
+### **Examples of successful untargeted attack**
+![](examples/shark_sum/comparison.png)
+![](examples/Cat_max/comparison.png)
 This repository contains our PyTorch implementation of RayS: A Ray Searching Method for Hard-label Adversarial Attack in the paper [RayS: A Ray Searching Method for Hard-label Adversarial Attack](https://arxiv.org/abs/2006.12792) (accepted by KDD 2020). 
 
 # What is RayS
