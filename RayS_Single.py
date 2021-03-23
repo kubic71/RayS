@@ -20,11 +20,12 @@ class RayS(object):
         out = x + d * v
         return torch.clamp(out, lb, rb)
 
-    def attack_hard_label(self, x, y, target=None, query_limit=10000, seed=None):
-        """ Attack the original image and return adversarial example
+    def attack_hard_label(self, x, y, target_label=None, query_limit=10000, seed=None):
+        """ Attack the original image and return adversarial example.
             model: (pytorch model)
             (x, y): original image
         """
+        x = x.cuda()
         shape = list(x.shape)
         dim = np.prod(shape[1:])
         if seed is not None:
@@ -48,7 +49,7 @@ class RayS(object):
             attempt[:, start:end] *= -1.
             attempt = attempt.view(shape)
 
-            self.binary_search(x, y, target, attempt)
+            self.binary_search(x, y, target_label, attempt)
 
             block_ind += 1
             if block_ind == 2 ** block_level or end == dim:
@@ -115,4 +116,4 @@ class RayS(object):
             return False
 
     def __call__(self, data, label, target=None, seed=None, query_limit=10000):
-        return self.attack_hard_label(data, label, target=target, seed=seed, query_limit=query_limit)
+        return self.attack_hard_label(data, label, target_label=target, seed=seed, query_limit=query_limit)
