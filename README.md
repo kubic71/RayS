@@ -1,5 +1,5 @@
 ## Google Vision attacks
-This fork tries to apply RayS untargeted Linf attack to commercial Google Vision API. Bellow are the results of the experiments done so far.
+This fork tries to apply RayS untargeted L_inf norm hard-label attack to commercial Google Vision API. Bellow are the results of the experiments done so far.
 
 Google vision API doesn't classify images into a set number of categories. Therefore we need our own binary decision function which defines what is/isn't a valid adversarial example.
 
